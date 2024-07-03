@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import 'reactjs-popup/dist/index.css'
-import { fetchMovies } from './data/moviesSlice'
+import { fetchMovies, incrementPage } from './data/moviesSlice'
 import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER } from './constants'
 import Header from './components/Header'
 import Movies from './components/Movies'
@@ -21,22 +21,21 @@ import { createPortal } from 'react-dom'
 import Modal from './components/Modal'
 
 const App = () => {
-  const movies = useSelector((state) => state.movies)
+  const { movies, currentPage } = useSelector((state) => state.movies)
   const { videoKey, modal: trailerModal } = useSelector(
     (state) => state.movieTrailer
   )
   const dispatch = useDispatch()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchQuery = searchParams.get('search')
-
   const navigate = useNavigate()
 
   const getSearchResults = (query) => {
     if (query !== '') {
-      dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=` + query))
+      dispatch(fetchMovies({ apiUrl: `${ENDPOINT_SEARCH}&query=${query}` }))
       setSearchParams(createSearchParams({ search: query }))
     } else {
-      dispatch(fetchMovies(ENDPOINT_DISCOVER))
+      dispatch(fetchMovies({ apiUrl: ENDPOINT_DISCOVER, page: currentPage }))
       setSearchParams()
     }
   }
@@ -48,16 +47,20 @@ const App = () => {
 
   const getMovies = () => {
     if (searchQuery) {
-      dispatch(fetchMovies(`${ENDPOINT_SEARCH}&query=` + searchQuery))
+      dispatch(
+        fetchMovies({
+          apiUrl: `${ENDPOINT_SEARCH}&query=${searchQuery}`,
+        })
+      )
     } else {
-      dispatch(fetchMovies(ENDPOINT_DISCOVER))
+      dispatch(fetchMovies({ apiUrl: ENDPOINT_DISCOVER, page: currentPage }))
     }
   }
 
   useEffect(() => {
     getMovies()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [currentPage])
 
   return (
     <div className="App">
@@ -77,6 +80,8 @@ const App = () => {
             element={<h1 className="not-found">Page Not Found</h1>}
           />
         </Routes>
+
+        <button onClick={() => dispatch(incrementPage())}>get results</button>
 
         {trailerModal &&
           createPortal(
