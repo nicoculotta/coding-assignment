@@ -1,6 +1,5 @@
 {
   "extends": [
-    "next/core-web-vitals",
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
@@ -9,12 +8,21 @@
     "plugin:testing-library/react"
   ],
   "rules": {
-    "testing-library/await-async-query": "error",
-    "testing-library/no-await-sync-query": "error",
-    "testing-library/no-debugging-utils": "warn",
-    "testing-library/no-dom-import": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
-    "prettier/prettier": "warn",
-    "curly": "error"
+    "curly": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "semi": false,
+        "trailingComma": "es5"
+      }
+    ]
   },
+  "parserOptions": {
+    "ecmaVersion": 2024,
+    "sourceType": "module"
+  }
 }
