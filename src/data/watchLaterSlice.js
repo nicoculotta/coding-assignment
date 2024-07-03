@@ -15,7 +15,7 @@ const watchLaterSlice = createSlice({
       )
       state.watchLaterMovies.splice(indexOfId, 1)
     },
-    remveAllWatchLater: (state) => {
+    removeAllWatchLater: (state) => {
       state.watchLaterMovies = []
     },
   },

@@ -2,8 +2,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import starredSlice from '../data/starredSlice'
 import watchLaterSlice from '../data/watchLaterSlice'
 import placeholder from '../assets/not-found-500X750.jpeg'
+import { fetchMovieById, openModal } from '../data/movieTrailerSlice'
+import { ENDPOINT_MOVIE_BY_ID } from '../constants'
 
-const Movie = ({ movie, viewTrailer }) => {
+const Movie = ({ movie }) => {
   const state = useSelector((state) => state)
   const { starred, watchLater } = state
   const { starMovie, unstarMovie } = starredSlice.actions
@@ -14,6 +16,11 @@ const Movie = ({ movie, viewTrailer }) => {
   const myClickHandler = (e) => {
     e.stopPropagation()
     e.target.parentElement.parentElement.classList.remove('opened')
+  }
+
+  const handleClickTrailer = (movieId) => {
+    dispatch(fetchMovieById(ENDPOINT_MOVIE_BY_ID(movieId)))
+    dispatch(openModal())
   }
 
   return (
@@ -90,7 +97,7 @@ const Movie = ({ movie, viewTrailer }) => {
             <button
               type="button"
               className="btn btn-dark"
-              onClick={() => viewTrailer(movie)}
+              onClick={() => handleClickTrailer(movie.id)}
             >
               View Trailer
             </button>

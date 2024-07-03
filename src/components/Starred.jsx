@@ -4,7 +4,7 @@ import starredSlice from '../data/starredSlice'
 import Movie from './Movie'
 import '../styles/starred.scss'
 
-const Starred = ({ viewTrailer }) => {
+const Starred = () => {
   const state = useSelector((state) => state)
   const { starred } = state
   const { clearAllStarred } = starredSlice.actions
@@ -15,9 +15,9 @@ const Starred = ({ viewTrailer }) => {
       {starred.starredMovies.length > 0 && (
         <div data-testid="starred-movies" className="starred-movies">
           <h6 className="header">Starred movies</h6>
-          <div className="row">
+          <div className="movies_grid">
             {starred.starredMovies.map((movie) => (
-              <Movie movie={movie} key={movie.id} viewTrailer={viewTrailer} />
+              <Movie movie={movie} key={movie.id} />
             ))}
           </div>
 
