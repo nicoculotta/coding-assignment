@@ -73,12 +73,12 @@
       height: 85px;
       padding: 5px;
       margin-bottom: 5px;
-      overflow: scroll;
+      overflow-y: auto;
       font-size: 0.7rem;
       line-height: 105%;
 
       @media (max-width: 720px) {
-        height: 60px;
+        height: 80px;
         padding: 3px;
         margin-bottom: 2px;
       }
@@ -88,6 +88,7 @@
         margin-bottom: 40px;
         font-size: 1rem;
         line-height: 115%;
+        overflow-y: auto;
       }
     }
   }
@@ -129,7 +130,6 @@
     padding: 0.2rem 0 0.4rem;
     font-size: 0.7rem;
     @media (max-width: 480px) {
-      position: absolute;
       right: 0;
       bottom: 67%;
       left: 0;
@@ -140,7 +140,8 @@
 
   img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
   }
   .btn-star {
     width: 50px;
@@ -286,7 +287,7 @@
       left: 0;
       z-index: 999;
       width: 100%;
-      height: auto;
+      height: 100%;
       border: 3px solid #fff;
       border-radius: 5px;
       transform: none;
@@ -305,7 +306,7 @@
         &.mobile-card {
           position: absolute;
           right: 0;
-          bottom: 70%;
+          bottom: 80%;
           left: 0;
           display: block;
           padding: 19px;

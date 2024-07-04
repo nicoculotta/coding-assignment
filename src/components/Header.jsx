@@ -6,7 +6,6 @@ import {
 } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from '../constants'
-import '../styles/header.scss'
 import { useEffect, useState } from 'react'
 import { useDebounce } from '../hooks/useDebounce'
 import {
@@ -15,6 +14,7 @@ import {
   clearSearchResults,
   fetchMovies,
 } from '../data/moviesSlice'
+import '../styles/header.scss'
 
 const Header = () => {
   const { starredMovies } = useSelector((state) => state.starred)
