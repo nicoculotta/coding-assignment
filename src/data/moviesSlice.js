@@ -23,6 +23,12 @@ const moviesSlice = createSlice({
     incrementPage: (state) => {
       state.currentPage += 1
     },
+    clearPage: (state) => {
+      state.currentPage = 1
+    },
+    clearMovies: (state) => {
+      state.movies = []
+    },
     clearSearchResults: (state) => {
       state.searchResults = []
     },
@@ -35,6 +41,7 @@ const moviesSlice = createSlice({
         if (query) {
           state.searchResults = data.results
           state.searchStatus = 'success'
+          state.currentPage = 1
         } else {
           //Some logic to prevent duplicate results due to react in dev mode re-render twice, we can avoid this behavior removing the strict mode.
           const newMovies = [...state.movies, ...results]
@@ -66,5 +73,6 @@ const moviesSlice = createSlice({
   },
 })
 
-export const { incrementPage, clearSearchResults } = moviesSlice.actions
+export const { incrementPage, clearSearchResults, clearPage, clearMovies } =
+  moviesSlice.actions
 export default moviesSlice

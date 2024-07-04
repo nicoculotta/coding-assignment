@@ -6,11 +6,15 @@ import {
 } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from '../constants'
-
 import '../styles/header.scss'
 import { useEffect, useState } from 'react'
 import { useDebounce } from '../hooks/useDebounce'
-import { clearSearchResults, fetchMovies } from '../data/moviesSlice'
+import {
+  clearMovies,
+  clearPage,
+  clearSearchResults,
+  fetchMovies,
+} from '../data/moviesSlice'
 
 const Header = () => {
   const { starredMovies } = useSelector((state) => state.starred)
@@ -25,11 +29,14 @@ const Header = () => {
   const debounceSearch = useDebounce(searchValue, 500)
 
   const handleSearch = () => {
-    if (debounceSearch?.length > 0) {
-      dispatch(fetchMovies({ apiUrl: ENDPOINT_SEARCH, query: debounceSearch }))
-      setSearchParams(createSearchParams({ search: debounceSearch }))
+    if (searchValue?.length > 0) {
+      dispatch(clearMovies())
+      dispatch(fetchMovies({ apiUrl: ENDPOINT_SEARCH, query: searchValue }))
+      setSearchParams(createSearchParams({ search: searchValue }))
     } else {
+      dispatch(clearMovies())
       dispatch(clearSearchResults())
+      dispatch(clearPage())
       dispatch(fetchMovies({ apiUrl: ENDPOINT_DISCOVER, page: currentPage }))
       setSearchParams()
     }
@@ -42,7 +49,14 @@ const Header = () => {
 
   return (
     <header>
-      <Link to="/" data-testid="home" onClick={() => setSearchValue('')}>
+      <Link
+        to="/"
+        data-testid="home"
+        onClick={() => {
+          handleSearch()
+          setSearchValue('')
+        }}
+      >
         <i className="bi bi-film" />
       </Link>
 

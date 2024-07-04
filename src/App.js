@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import 'reactjs-popup/dist/index.css'
-import { incrementPage } from './data/moviesSlice'
 import Movies from './components/Movies'
 import Starred from './components/Starred'
 import WatchLater from './components/WatchLater'
@@ -32,8 +31,6 @@ const App = () => {
             element={<h1 className="not-found">Page Not Found</h1>}
           />
         </Routes>
-
-        <button onClick={() => dispatch(incrementPage())}>get results</button>
 
         {trailerModal &&
           createPortal(
