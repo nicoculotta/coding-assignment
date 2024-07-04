@@ -1,14 +1,48 @@
-import { Link, NavLink } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import {
+  createSearchParams,
+  Link,
+  NavLink,
+  useSearchParams,
+} from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from '../constants'
 
 import '../styles/header.scss'
+import { useEffect, useState } from 'react'
+import { useDebounce } from '../hooks/useDebounce'
+import { clearSearchResults, fetchMovies } from '../data/moviesSlice'
 
-const Header = ({ searchMovies }) => {
+const Header = () => {
   const { starredMovies } = useSelector((state) => state.starred)
+  const { currentPage } = useSelector((state) => state.movies)
+  const dispatch = useDispatch()
+
+  //TODO: this could be a custom hook
+  const [searchParams, setSearchParams] = useSearchParams()
+  const searchQuery = searchParams.get('search')
+
+  const [searchValue, setSearchValue] = useState(searchQuery ? searchQuery : '')
+  const debounceSearch = useDebounce(searchValue, 500)
+
+  const handleSearch = () => {
+    if (debounceSearch?.length > 0) {
+      dispatch(fetchMovies({ apiUrl: ENDPOINT_SEARCH, query: debounceSearch }))
+      setSearchParams(createSearchParams({ search: debounceSearch }))
+    } else {
+      dispatch(clearSearchResults())
+      dispatch(fetchMovies({ apiUrl: ENDPOINT_DISCOVER, page: currentPage }))
+      setSearchParams()
+    }
+  }
+
+  useEffect(() => {
+    handleSearch()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounceSearch])
 
   return (
     <header>
-      <Link to="/" data-testid="home" onClick={() => searchMovies('')}>
+      <Link to="/" data-testid="home" onClick={() => setSearchValue('')}>
         <i className="bi bi-film" />
       </Link>
 
@@ -33,17 +67,16 @@ const Header = ({ searchMovies }) => {
       </nav>
 
       <div className="input-group rounded">
-        <Link to="/" onClick={(e) => searchMovies('')} className="search-link">
-          <input
-            type="search"
-            data-testid="search-movies"
-            onKeyUp={(e) => searchMovies(e.target.value)}
-            className="form-control rounded"
-            placeholder="Search movies..."
-            aria-label="Search movies"
-            aria-describedby="search-addon"
-          />
-        </Link>
+        <input
+          type="text"
+          data-testid="search-movies"
+          className="form-control rounded search-link"
+          placeholder="Search movies..."
+          aria-label="Search movies"
+          aria-describedby="search-addon"
+          onChange={(e) => setSearchValue(e.target.value)}
+          value={searchValue}
+        />
       </div>
     </header>
   )

@@ -1,16 +1,7 @@
-import { useEffect } from 'react'
-import {
-  Routes,
-  Route,
-  createSearchParams,
-  useSearchParams,
-  useNavigate,
-} from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import 'reactjs-popup/dist/index.css'
-import { fetchMovies, incrementPage } from './data/moviesSlice'
-import { ENDPOINT_SEARCH, ENDPOINT_DISCOVER } from './constants'
-import Header from './components/Header'
+import { incrementPage } from './data/moviesSlice'
 import Movies from './components/Movies'
 import Starred from './components/Starred'
 import WatchLater from './components/WatchLater'
@@ -19,60 +10,21 @@ import './app.scss'
 import { closeModal } from './data/movieTrailerSlice'
 import { createPortal } from 'react-dom'
 import Modal from './components/Modal'
+import Header from './components/Header'
 
 const App = () => {
-  const { movies, currentPage } = useSelector((state) => state.movies)
   const { videoKey, modal: trailerModal } = useSelector(
     (state) => state.movieTrailer
   )
   const dispatch = useDispatch()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const searchQuery = searchParams.get('search')
-  const navigate = useNavigate()
-
-  const getSearchResults = (query) => {
-    if (query !== '') {
-      dispatch(fetchMovies({ apiUrl: `${ENDPOINT_SEARCH}&query=${query}` }))
-      setSearchParams(createSearchParams({ search: query }))
-    } else {
-      dispatch(fetchMovies({ apiUrl: ENDPOINT_DISCOVER, page: currentPage }))
-      setSearchParams()
-    }
-  }
-
-  const searchMovies = (query) => {
-    navigate('/')
-    getSearchResults(query)
-  }
-
-  const getMovies = () => {
-    if (searchQuery) {
-      dispatch(
-        fetchMovies({
-          apiUrl: `${ENDPOINT_SEARCH}&query=${searchQuery}`,
-        })
-      )
-    } else {
-      dispatch(fetchMovies({ apiUrl: ENDPOINT_DISCOVER, page: currentPage }))
-    }
-  }
-
-  useEffect(() => {
-    getMovies()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage])
 
   return (
     <div className="App">
-      <Header
-        searchMovies={searchMovies}
-        searchParams={searchParams}
-        setSearchParams={setSearchParams}
-      />
+      <Header />
 
       <div className="container">
         <Routes>
-          <Route path="/" element={<Movies movies={movies} />} />
+          <Route path="/" element={<Movies />} />
           <Route path="/starred" element={<Starred />} />
           <Route path="/watch-later" element={<WatchLater />} />
           <Route
