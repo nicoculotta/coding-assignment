@@ -1,51 +1,11 @@
-import {
-  createSearchParams,
-  Link,
-  NavLink,
-  useSearchParams,
-} from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { ENDPOINT_DISCOVER, ENDPOINT_SEARCH } from '../constants'
-import { useEffect, useState } from 'react'
-import { useDebounce } from '../hooks/useDebounce'
-import {
-  clearMovies,
-  clearPage,
-  clearSearchResults,
-  fetchMovies,
-} from '../data/moviesSlice'
+import { Link, NavLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import '../styles/header.scss'
+import useSearchMovies from '../hooks/useSearchMovies'
 
 const Header = () => {
   const { starredMovies } = useSelector((state) => state.starred)
-  const { currentPage } = useSelector((state) => state.movies)
-  const dispatch = useDispatch()
-
-  //TODO: this could be a custom hook
-  const [searchParams, setSearchParams] = useSearchParams()
-  const searchQuery = searchParams.get('search')
-
-  const [searchValue, setSearchValue] = useState(searchQuery ? searchQuery : '')
-  const debounceSearch = useDebounce(searchValue, 500)
-
-  const handleSearch = () => {
-    if (searchValue?.length > 0) {
-      dispatch(clearMovies())
-      dispatch(fetchMovies({ apiUrl: ENDPOINT_SEARCH, query: searchValue }))
-      setSearchParams(createSearchParams({ search: searchValue }))
-    } else {
-      dispatch(clearMovies())
-      dispatch(clearSearchResults())
-      dispatch(clearPage())
-      dispatch(fetchMovies({ apiUrl: ENDPOINT_DISCOVER, page: currentPage }))
-      setSearchParams()
-    }
-  }
-
-  useEffect(() => {
-    handleSearch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounceSearch])
+  const { handleSearch, setSearchValue, searchValue } = useSearchMovies()
 
   return (
     <header>
