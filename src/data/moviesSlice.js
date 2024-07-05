@@ -3,10 +3,18 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 export const fetchMovies = createAsyncThunk(
   'movies/fetchMovies',
   async ({ apiUrl, query, page }) => {
-    const response = await fetch(
-      `${apiUrl}${query ? `&query=${query}` : ''}&page=${page ? page : 1}`
-    )
-    return { data: await response.json(), query: query ? query : '' }
+    try {
+      const response = await fetch(
+        `${apiUrl}${query ? `&query=${query}` : ''}&page=${page ? page : 1}`
+      )
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      const data = await response.json()
+      return { data, query: query ? query : '' }
+    } catch (error) {
+      console.log(error)
+    }
   }
 )
 
